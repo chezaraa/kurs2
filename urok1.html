@@ -49,6 +49,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}
 td{border-bottom:1px solid var(--line);padding:7px 4px;vertical-align:top}
 input,textarea{width:100%;font:inherit;padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);margin:0 0 8px}
 .tpl{white-space:pre-wrap;background:var(--cli);border-radius:10px;padding:12px;margin:8px 0}
+.tap{cursor:pointer}.noru .bub.showru .ru{display:block}.trn{display:none;margin-top:6px}.trn.on{display:block}
 .ans{display:none;margin-top:8px;padding:8px 10px;border-left:4px solid var(--yel);background:var(--cli)}
 .ans.on{display:block}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
@@ -67,6 +68,7 @@ input,textarea{width:100%;font:inherit;padding:9px;border:1px solid var(--line);
 <button role="tab" data-t="s3" aria-selected="false">Числа и время</button>
 <button role="tab" data-t="s4" aria-selected="false">Ответь вслух</button>
 <button role="tab" data-t="s5" aria-selected="false">WhatsApp</button>
+<button role="tab" data-t="s6" aria-selected="false">Слова</button>
 </nav>
 </header>
 <main>
@@ -110,7 +112,7 @@ input,textarea{width:100%;font:inherit;padding:9px;border:1px solid var(--line);
 
 <section id="s4">
 <h2>Клиент спрашивает, ты отвечаешь</h2>
-<p class="lead">Нажми на кружок, послушай вопрос и ответь вслух. Потом открой образец.</p>
+<p class="lead">Нажми на кружок, послушай вопрос и ответь вслух. Нажми на любую фразу, чтобы увидеть перевод. Потом открой образец.</p>
 <div id="qb"></div>
 </section>
 
@@ -122,9 +124,16 @@ input,textarea{width:100%;font:inherit;padding:9px;border:1px solid var(--line);
 <input id="ft" placeholder="Время, например: 18:00" autocomplete="off">
 <input id="fa" placeholder="Адрес" autocomplete="off">
 <div class="tpl" id="tpl"></div>
+<p class="ru">Здравствуйте, [имя], как мы договорились по телефону, увидимся в указанный день и время по этому адресу. Если что-то изменится, сообщите. Спасибо.</p>
 <div class="bar"><button class="b" id="cp">Скопировать</button></div>
 <div class="card"><div class="es">Если не уверен, что понял:</div>
-<div>Hola, para confirmar: ¿nos vemos el jueves a las 18:00? ¿Me puede enviar la ubicación por aquí? Gracias.</div></div>
+<div>Hola, para confirmar: ¿nos vemos el jueves a las 18:00? ¿Me puede enviar la ubicación por aquí? Gracias.</div><div class="ru">Чтобы подтвердить: встречаемся в четверг в 18:00? Можете прислать локацию сюда? Спасибо.</div></div>
+</section>
+<section id="s6">
+<h2>Все слова урока</h2>
+<p class="lead">Каждое слово из диалогов, фраз и тестов этого урока, по алфавиту. Нажми на кружок, чтобы услышать.</p>
+<input id="wq" type="search" placeholder="Поиск по испанскому или русскому" autocomplete="off">
+<div id="wl"></div>
 </section>
 </main>
 <div id="toast" role="status"></div>
@@ -209,12 +218,14 @@ var QZ=[
 ["El plazo es de siete u ocho semanas.",["7-8 дней","7-8 недель","17-18 недель","7-8 месяцев"],1]
 ];
 var QB=[
-["¿Cuánto costaría más o menos?","Depende de los materiales y del trabajo. Tengo que verlo y le preparo un presupuesto."],
-["¿Cuánto tardaría?","Depende del trabajo. Después de verlo le digo un plazo."],
-["¿Puede venir hoy?","Hoy no puedo. ¿Le va bien mañana a las seis?"],
-["¿Trabaja en mi zona?","Sí, trabajo en toda la zona de Tarragona y alrededores."],
-["No le oigo bien. ¿Puede repetir?","Claro. Es que hay poca cobertura. Le llamo en cinco minutos o le escribo por WhatsApp."]
+["¿Cuánto costaría más o menos?","Depende de los materiales y del trabajo. Tengo que verlo y le preparo un presupuesto.","Сколько это примерно будет стоить?","Зависит от материалов и работы. Мне нужно посмотреть, и я подготовлю смету."],
+["¿Cuánto tardaría?","Depende del trabajo. Después de verlo le digo un plazo.","Сколько это займёт?","Зависит от работы. После осмотра назову срок."],
+["¿Puede venir hoy?","Hoy no puedo. ¿Le va bien mañana a las seis?","Вы можете приехать сегодня?","Сегодня не могу. Вам подходит завтра в шесть?"],
+["¿Trabaja en mi zona?","Sí, trabajo en toda la zona de Tarragona y alrededores.","Вы работаете в моём районе?","Да, я работаю по всему региону Таррагоны и окрестностям."],
+["No le oigo bien. ¿Puede repetir?","Claro. Es que hay poca cobertura. Le llamo en cinco minutos o le escribo por WhatsApp.","Я вас плохо слышу. Можете повторить?","Конечно. Просто плохая связь. Перезвоню через пять минут или напишу в WhatsApp."]
 ];
+var QZR=["Увидимся в половине седьмого.","Квартира на третьем этаже.","В ней около 85 квадратных метров.","Улица Майор, дом 12, третий этаж, вторая дверь.","Могу заехать в понедельник без четверти пять.","Срок семь-восемь недель."];
+var WL1=[["a","к, в: «a las seis» в шесть","a"],["ahora","сейчас","ahora"],["alguien","кто-то","alguien"],["algún (alguna)","какой-то, какая-то","algún"],["alrededores","окрестности","alrededores"],["apuntar (apunto)","записывать","apuntar"],["aquí","здесь","aquí"],["arreglar","чинить","arreglar"],["ascensor","лифт","ascensor"],["avisar (avisa)","предупреждать, сообщать","avisar"],["azulejos","плитка настенная","azulejos"],["bañera","ванна","bañera"],["baño (baños)","ванная, санузел","baño"],["bien","хорошо","bien"],["buenas (buenos)","добрый: «buenas tardes» добрый день, «buenos días» доброе утро","buenas"],["buscar (buscando)","искать","buscar"],["cada","каждый","cada"],["calle","улица","calle"],["cambiar (cambiamos, cambio)","менять; «cambio» (сущ.) изменение","cambiar"],["cambrils","Камбрильс (город)","cambrils"],["casa","дом","casa"],["cerca","рядом, близко","cerca"],["cinco","пять","cinco"],["cincuenta","пятьдесят","cincuenta"],["claro","конечно, ясно","claro"],["cobertura","покрытие, связь","cobertura"],["cocina","кухня","cocina"],["como","как, так как","como"],["completa","полная","completa"],["comprar (comprado)","покупать","comprar"],["con","с","con"],["conducir (conduciendo)","вести машину","conducir"],["confirmar","подтвердить","confirmar"],["contar (cuénteme)","рассказывать: «cuénteme» расскажите мне","contar"],["correcto","верно","correcto"],["costar (costaría)","стоить","costar"],["creer (creo)","думать, полагать","creer"],["cuadrado (cuadrados)","квадратный","cuadrado"],["cuando (cuándo)","когда","cuando"],["cuánto (cuántos)","сколько","cuánto"],["cuarenta","сорок","cuarenta"],["cuarto","четверть: «y cuarto» пятнадцать минут, «menos cuarto» без четверти","cuarto"],["cuatro","четыре","cuatro"],["dar (darle)","давать: «darle» дать вам, «doy» даю","dar"],["de","из, от, о, «de» между существительными","de"],["decidir (decide)","решать","decidir"],["decir (dice, digo, dígame)","говорить, сказать: «dígame» скажите мне (слушаю вас)","decir"],["del","из, от (de + el)","del"],["deletrear","диктовать по буквам","deletrear"],["dentro","внутри: «dentro de dos meses» через два месяца","dentro"],["depender (depende)","зависеть","depender"],["despacio","медленно","despacio"],["después","после, потом","después"],["días","дни","días"],["diez","десять","diez"],["dirección","адрес","dirección"],["doce","двенадцать","doce"],["dónde","где","dónde"],["dos","два","dos"],["ducha","душ","ducha"],["el (la, las, los)","определённый артикль: el (м.р.), la (ж.р.), los/las (мн.ч.)","el"],["eléctrica","электрическая: «instalación eléctrica» электрика","eléctrica"],["en","в, на","en"],["encimera","столешница","encimera"],["entender (entiendo, entendido)","понимать","entender"],["entero","целый","entero"],["enviar","отправлять","enviar"],["escalera","лестница","escalera"],["escalones","ступени","escalones"],["escribir (escribo)","писать","escribir"],["español","испанский язык","español"],["esta","эта","esta"],["estar (está, estoy)","находиться, быть: «está» находится, «estoy» я нахожусь/я","estar"],["exacto (exactamente)","точный, точно","exacto"],["favor","одолжение: «por favor» пожалуйста","favor"],["foto","фото","foto"],["gracias","спасибо","gracias"],["gres","керамогранит","gres"],["haber (he, hemos)","вспомогательный глагол: «he entendido» я понял, «ha podido» смог","haber"],["habitaciones","комнаты","habitaciones"],["hablar (habla, hablo, hablado)","говорить","hablar"],["hacer (hace, hacen)","делать","hacer"],["hasta","до: «hasta el jueves» до четверга","hasta"],["hay","есть, имеется","hay"],["hola","здравствуйте","hola"],["hoy","сегодня","hoy"],["humedad","сырость","humedad"],["instalación","установка, проводка","instalación"],["ir (va)","идти, ехать: «¿le va bien?» вам подходит? «voy a comprobar» проверю","ir"],["jueves","четверг","jueves"],["le (lo)","вам, ему; его: «le llamo» звоню вам, «lo veo» вижу это","le"],["llamar (llamo)","звонить","llamar"],["lunes","понедельник","lunes"],["madera","дерево","madera"],["mañana","завтра, утро","mañana"],["mandar (manda, mando)","присылать","mandar"],["más","больше, более","más"],["material (materiales)","материал","material"],["mayor","главный: «Calle Mayor» Главная улица","mayor"],["me","мне, меня","me"],["media","половина: «y media» половина часа","media"],["menos","меньше; «menos cuarto» без четверти","menos"],["mensaje","сообщение","mensaje"],["meses","месяцы","meses"],["metro (metros)","метр","metro"],["mi","мой","mi"],["minutos","минуты","minutos"],["mismo","тот же","mismo"],["momento","момент: «un momento» минутку","momento"],["mueble (muebles)","мебель, тумба","mueble"],["muy","очень","muy"],["necesitar (necesita)","нуждаться, быть нужным","necesitar"],["no","нет, не","no"],["nombre","имя","nombre"],["nos","нас; мы","nos"],["noventa","девяносто","noventa"],["nueve","девять","nueve"],["número","номер","número"],["o","или","o"],["obra (obras)","строительные работы, объект","obra"],["ochenta","восемьдесят","ochenta"],["ocho","восемь","ocho"],["oír (oigo)","слышать","oír"],["once","одиннадцать","once"],["para","для, чтобы","para"],["pared","стена","pared"],["parte","часть","parte"],["pasar (pase)","заехать, войти: «pase» проходите","pasar"],["perdone","извините","perdone"],["perfecto","отлично","perfecto"],["pero","но","pero"],["piedra","камень","piedra"],["pintura","покраска","pintura"],["piso","квартира","piso"],["planta (plantas)","этаж","planta"],["plato","поддон, тарелка: «plato de ducha» душевой поддон","plato"],["plazo","срок","plazo"],["poco (poca)","мало","poco"],["poder (puedo, puede, podemos)","мочь","poder"],["poner","ставить, класть","poner"],["por","по, за, через","por"],["precio","цена","precio"],["preparar (preparo)","готовить","preparar"],["presupuesto","смета","presupuesto"],["que","что, чтобы","que"],["qué","что, какой (в вопросе)","qué"],["quedar","договориться о встрече: «quedo atento» буду ждать","quedar"],["querer (quiero, quiere, quería)","хотеть","querer"],["quitar","убрать","quitar"],["reforma (reformas, reformar)","ремонт; ремонтировать","reforma"],["repetir","повторить","repetir"],["rotos","сломанные","rotos"],["sábado","суббота","sábado"],["se","себя: «se lo digo» скажу вам это","se"],["segunda","вторая","segunda"],["seis","шесть","seis"],["semana (semanas)","неделя","semana"],["separado","отдельный","separado"],["ser (es, son)","быть: «es» это, «soy» я","ser"],["serhii","Сергей (имя мастера)","serhii"],["sesenta","шестьдесят","sesenta"],["setenta","семьдесят","setenta"],["si","если","si"],["sí","да","sí"],["siete","семь","siete"],["sin","без","sin"],["solo","только","solo"],["suelo (suelos)","пол","suelo"],["también","также","también"],["tardar (tardaría)","занимать (время)","tardar"],["tarde (tardes)","поздно; вторая половина дня","tarde"],["tarragona","Таррагона","tarragona"],["teléfono","телефон","teléfono"],["tener (tengo, tiene)","иметь","tener"],["tercera (tercero)","третья, третий","tercera"],["todo (toda)","всё, вся","todo"],["trabajo (trabaja)","работа; «trabaja» работает","trabajo"],["treinta","тридцать","treinta"],["tres","три","tres"],["u","или (перед словом на «o»)","u"],["ubicación","локация","ubicación"],["un (una, unas, unos)","один; неопределённый артикль","un"],["uno","один","uno"],["usted","вы (вежливое)","usted"],["vacío","пустой","vacío"],["vale","хорошо, ок","vale"],["varios","несколько","varios"],["veinte","двадцать","veinte"],["venir (viene)","приходить: «le viene bien» вам удобно","venir"],["ver (vemos, verlo)","видеть","ver"],["verdad","правда","verdad"],["viejo","старый","viejo"],["viernes","пятница","viernes"],["vivienda","жильё","vivienda"],["vivir (vive)","жить","vivir"],["whatsapp","WhatsApp","whatsapp"],["y","и","y"],["zona","зона, район","zona"]];
 var $=function(s){return document.querySelector(s)};
 var synth=window.speechSynthesis,rate=.9,tok=0,cur="A",showRu=true,prac=false;
 function toast(t){var e=$("#toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},2200)}
@@ -241,7 +252,7 @@ function drawCall(){
  $("#chat").className="chat"+(showRu?"":" noru");
  $("#chat").innerHTML=c.l.map(function(x,i){return '<div class="bub '+x[0]+(prac&&x[0]==="m"?" hide":"")+'" data-i="'+i+'"><small>'+(x[0]==="m"?"Ты (мастер)":"Клиент")+'</small><div class="es">'+x[1]+'</div><div class="ru">'+x[2]+'</div></div>'}).join("")}
 $("#tabsCall").onclick=function(e){var b=e.target.closest("[data-k]");if(b){halt();cur=b.dataset.k;drawTabs();drawCall()}};
-$("#chat").onclick=function(e){var b=e.target.closest(".bub");if(!b)return;var x=CALLS[cur].l[b.dataset.i];b.classList.remove("hide");one(x[1])};
+$("#chat").onclick=function(e){var b=e.target.closest(".bub");if(!b)return;var x=CALLS[cur].l[b.dataset.i];b.classList.remove("hide");b.classList.toggle("showru");one(x[1])};
 function run(i,t){
  if(t!==tok)return;var L=CALLS[cur].l;
  if(i>=L.length){halt();return}
@@ -259,16 +270,18 @@ $("#pr").onclick=function(){halt();prac=!prac;this.textContent="Я мастер:
 var SP=[[.9,"средняя"],[.7,"медленная"],[1,"обычная"]],si=0;
 $("#spd").onclick=function(){si=(si+1)%3;rate=SP[si][0];this.textContent="Скорость: "+SP[si][1]};
 /* quiz */
-$("#quiz").innerHTML=QZ.map(function(q,i){return '<div class="card" data-q="'+i+'"><div class="row"><div class="es">'+q[0]+'</div><button class="sp" data-s="'+i+'" aria-label="Слушать">&#9654;</button></div><div class="opts">'+q[1].map(function(o,j){return '<button data-o="'+j+'">'+o+'</button>'}).join("")+'</div></div>'}).join("");
+$("#quiz").innerHTML=QZ.map(function(q,i){return '<div class="card" data-q="'+i+'"><div class="row"><div class="es tap" data-r="'+i+'">'+q[0]+'</div><button class="sp" data-s="'+i+'" aria-label="Слушать">&#9654;</button></div><div class="ru trn" id="tq'+i+'">'+QZR[i]+'</div><div class="opts">'+q[1].map(function(o,j){return '<button data-o="'+j+'">'+o+'</button>'}).join("")+'</div></div>'}).join("");
 $("#quiz").onclick=function(e){
  var s=e.target.closest("[data-s]");if(s){one(QZ[s.dataset.s][0]);return}
+ var r=e.target.closest("[data-r]");if(r){var cc=r.closest("[data-q]");if(!cc.dataset.done){toast("Сначала выбери ответ");return}$("#tq"+r.dataset.r).classList.toggle("on");return}
  var o=e.target.closest("[data-o]");if(!o)return;
  var c=o.closest("[data-q]"),q=QZ[c.dataset.q];
  if(c.dataset.done)return;
- if(+o.dataset.o===q[2]){o.classList.add("ok");c.dataset.done=1}else{o.classList.add("no")}}
+ if(+o.dataset.o===q[2]){o.classList.add("ok");c.dataset.done=1;$("#tq"+c.dataset.q).classList.add("on")}else{o.classList.add("no")}}
 /* ex B */
-$("#qb").innerHTML=QB.map(function(q,i){return '<div class="card"><div class="row"><div class="es">'+q[0]+'</div><button class="sp" data-s="'+i+'" aria-label="Слушать">&#9654;</button></div><div class="bar" style="margin:10px 0 0"><button class="b g" data-a="'+i+'">Показать образец</button></div><div class="ans" id="an'+i+'"><div class="es">'+q[1]+'</div><button class="b g" data-p="'+i+'" style="margin-top:8px">Слушать образец</button></div></div>'}).join("");
+$("#qb").innerHTML=QB.map(function(q,i){return '<div class="card"><div class="row"><div class="es tap" data-r="q'+i+'">'+q[0]+'</div><button class="sp" data-s="'+i+'" aria-label="Слушать">&#9654;</button></div><div class="ru trn" id="rq'+i+'">'+q[2]+'</div><div class="bar" style="margin:10px 0 0"><button class="b g" data-a="'+i+'">Показать образец</button></div><div class="ans" id="an'+i+'"><div class="es tap" data-r="a'+i+'">'+q[1]+'</div><div class="ru trn" id="ra'+i+'">'+q[3]+'</div><button class="b g" data-p="'+i+'" style="margin-top:8px">Слушать образец</button></div></div>'}).join("");
 $("#qb").onclick=function(e){
+ var r=e.target.closest("[data-r]");if(r){$("#r"+r.dataset.r).classList.toggle("on");return}
  var s=e.target.closest("[data-s]");if(s){one(QB[s.dataset.s][0]);return}
  var a=e.target.closest("[data-a]");if(a){$("#an"+a.dataset.a).classList.add("on");return}
  var p=e.target.closest("[data-p]");if(p){halt();say(QB[p.dataset.p][1],"m")}};
@@ -281,6 +294,9 @@ $("#cp").onclick=function(){
  var t=$("#tpl").textContent;
  try{navigator.clipboard.writeText(t).then(function(){toast("Скопировано")},function(){toast("Выдели текст и скопируй вручную")})}catch(e){toast("Выдели текст и скопируй вручную")}};
 if(synth&&synth.getVoices)synth.getVoices();
+function drawWl(){var f=($("#wq").value||"").toLowerCase();$("#wl").innerHTML=WL1.filter(function(w){return !f||w[0].toLowerCase().indexOf(f)>-1||w[1].toLowerCase().indexOf(f)>-1}).map(function(w){return '<div class="card row"><div><div class="es">'+w[0]+'</div><div class="ru">'+w[1]+'</div></div><button class="sp" data-w="'+w[2]+'" aria-label="Слушать">&#9654;</button></div>'}).join("")||'<p class="lead">Ничего не найдено.</p>'}
+$("#wq").oninput=drawWl;drawWl();
+$("#wl").onclick=function(e){var b=e.target.closest("[data-w]");if(b)one(b.dataset.w)};
 drawTabs();drawCall();
 </script>
 </body>
