@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Испанский для ремонта</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root{--bg:#f1f3f5;--card:#fff;--ink:#1b2733;--mute:#5c6b7a;--line:#d5dbe1;--blue:#1f4e79;--onblue:#fff;--yel:#f2c230;--onyel:#1b2733;--cli:#e4e9ee;--ok:#1d7a46;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a21;--card:#1d2630;--ink:#e8edf2;--mute:#9aa8b6;--line:#32404e;--blue:#7fb2e0;--onblue:#0f1822;--yel:#e8b923;--onyel:#141a21;--cli:#2a3541;--ok:#5ac08a}}
+:root[data-theme="dark"]{--bg:#141a21;--card:#1d2630;--ink:#e8edf2;--mute:#9aa8b6;--line:#32404e;--blue:#7fb2e0;--onblue:#0f1822;--yel:#e8b923;--onyel:#141a21;--cli:#2a3541;--ok:#5ac08a}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 100px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--blue);z-index:10}
+header{background:var(--blue);color:var(--onblue);padding:12px 18px 0;position:sticky;top:env(safe-area-inset-top,0px);z-index:9}
+header a.brand{color:inherit;text-decoration:none;font-weight:600;font-size:19px;display:block;margin-bottom:6px}
+nav{display:flex;gap:2px;overflow-x:auto;margin:0 -18px;padding:0 12px}
+nav a{flex:none;color:var(--onblue);text-decoration:none;font-weight:600;font-size:15px;padding:10px 10px;border-bottom:3px solid transparent;opacity:.75}
+nav a.cur{opacity:1;border-bottom-color:var(--yel)}
+main{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+section{display:none}section.on{display:block}
+h1{font-size:28px;line-height:1.2;margin:8px 0 10px}
+h2{font-size:21px;margin:22px 0 8px}
+p{margin:0 0 12px;max-width:62ch}
+p.mute,.mute{color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 10px}
+.row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.es{font-weight:600}.ru{color:var(--mute);font-size:15px}
+a.btn,button.sp{font:600 16px inherit;font-family:inherit;border-radius:8px;background:var(--blue);color:var(--onblue);padding:11px 16px;text-decoration:none;display:inline-block;border:0;cursor:pointer}
+button.sp{flex:none;width:42px;height:42px;padding:0;border-radius:50%;background:var(--yel);color:var(--onyel);font-size:15px}
+a.les{display:block;color:inherit;text-decoration:none}
+.tag{flex:none;font-size:13px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--cli);color:var(--mute)}
+.tag.go{background:var(--ok);color:#fff}
+.soon{opacity:.6}
+.wk{border-left:4px solid var(--yel);padding-left:12px;margin:0 0 12px}
+input{width:100%;font:inherit;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);margin:0 0 12px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;z-index:20}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="#home">Испанский для ремонта</a>
+<nav id="nav">
+<a href="#home">Главная</a>
+<a href="#part1">Часть 1</a>
+<a href="#later">Части 2 и 3</a>
+<a href="#zones">Модули зон</a>
+<a href="#rescue">Выручалки</a>
+<a href="#dict">Словарь</a>
+</nav>
+</header>
+<main>
+
+<section id="home">
+<h1>Принять звонок, назначить встречу, взять заказ</h1>
+<p>Курс для русскоязычного мастера по ремонту в Испании. Каждый урок строится на настоящем разговоре с клиентом: слушаешь, повторяешь, отвечаешь вслух.</p>
+<p>Часть 1 занимает две недели по 20-30 минут в день. К концу ты ведёшь клиента от первого звонка до договора.</p>
+<div class="wk"><b>Неделя 1.</b> Уроки 1-3: звонок, встреча, осмотр объекта.</div>
+<div class="wk"><b>Неделя 2.</b> Уроки 4-6: материалы, смета, договор и старт.</div>
+<p><a class="btn" href="urok1.html">Начать урок 1</a></p>
+<h2>Как устроен каждый урок</h2>
+<p>Не больше 25 новых слов и 8 фраз. Выручалки на случай, если не понял. Диалог с озвучкой. Практика вслух. Готовое сообщение для WhatsApp.</p>
+<p class="mute">Озвучка идёт голосом твоего телефона. Если испанского голоса нет, добавь его в настройках телефона.</p>
+</section>
+
+<section id="part1">
+<h1>Часть 1. Клиент: от звонка до договора</h1>
+<p class="mute">Шесть уроков. Слова разных зон ремонта (кухня, гипсокартон, двери) вынесены в отдельные модули.</p>
+<a class="card les row" href="urok1.html"><div><div class="es">Урок 1. Первый звонок</div><div class="ru">Ответить, понять, что нужно, назначить визит</div></div><span class="tag go">готов</span></a>
+<a class="card les row" href="uroki2-6.html#l2"><div><div class="es">Урок 2. Встреча и переносы</div><div class="ru">Время, адрес, телефон, опоздание, перенос</div></div><span class="tag go">готов</span></a>
+<a class="card les row" href="uroki2-6.html#l3"><div><div class="es">Урок 3. Встреча на объекте</div><div class="ru">Обход, что меняем, замеры, дефекты, бюджет</div></div><span class="tag go">готов</span></a>
+<a class="card les row" href="uroki2-6.html#l4"><div><div class="es">Урок 4. Работы и материалы</div><div class="ru">Выбираем вместе, кто покупает и везёт</div></div><span class="tag go">готов</span></a>
+<a class="card les row" href="uroki2-6.html#l5"><div><div class="es">Урок 5. Смета и ответ клиента</div><div class="ru">Отправить, напомнить, торг, «подумаем»</div></div><span class="tag go">готов</span></a>
+<a class="card les row" href="uroki2-6.html#l6"><div><div class="es">Урок 6. Договор, оплата, старт</div><div class="ru">Этапы оплаты, factura, дата начала</div></div><span class="tag go">готов</span></a>
+</section>
+
+<section id="later">
+<h1>Части 2 и 3</h1>
+<p class="mute">Начнём, когда часть 1 будет пройдена.</p>
+<h2>Часть 2. Работы на объекте</h2>
+<div class="card soon">Демонтаж и мусор. Подготовка: штукатурка, выравнивание. Плитка и ванная. Монтаж техники. Клиент приезжает: изменения.</div>
+<h2>Часть 3. Сдача и сложные ситуации</h2>
+<div class="card soon">Допработы и неожиданности. Жалобы. Разрешения и соседи. Сдача, последний платёж, гарантия.</div>
+</section>
+
+<section id="zones">
+<h1>Модули зон</h1>
+<p class="mute">Разговор о ванной, кухне и гипсокартоне устроен одинаково, меняются только слова. Каждый модуль: 20-25 слов, 5-6 вопросов, мини-диалог. Подключай по мере надобности.</p>
+<div class="card row"><div class="es">Ванная</div><span class="tag go">в уроке 1</span></div>
+<div class="card row soon"><div class="es">Кухня</div><span class="tag">скоро</span></div>
+<div class="card row soon"><div class="es">Полы и плитка</div><span class="tag">скоро</span></div>
+<div class="card row soon"><div class="es">Стены, потолки, гипсокартон, покраска</div><span class="tag">скоро</span></div>
+<div class="card row soon"><div class="es">Двери, окна, шкафы</div><span class="tag">скоро</span></div>
+<div class="card row soon"><div class="es">Электрика</div><span class="tag">скоро</span></div>
+<div class="card row soon"><div class="es">Сантехника и отопление</div><span class="tag">скоро</span></div>
+</section>
+
+<section id="rescue">
+<h1>Выручалки</h1>
+<p class="mute">Если не понял, не угадывай цифры и адрес: переспроси или попроси написать.</p>
+<div id="resc"></div>
+</section>
+
+<section id="dict">
+<h1>Словарь</h1>
+<p class="mute">Слова и глаголы уроков. Нажми на кружок, чтобы услышать.</p>
+<input id="q" type="search" placeholder="Поиск по испанскому или русскому" autocomplete="off">
+<div id="words"></div>
+</section>
+</main>
+<div id="toast" role="status"></div>
+
+<script>
+var RESC=[
+["Más despacio, por favor.","Помедленнее, пожалуйста."],
+["¿Puede repetir, por favor?","Можете повторить, пожалуйста?"],
+["No le he entendido bien.","Я вас не совсем понял."],
+["Perdone, hablo poco español. ¿Le puedo escribir por WhatsApp?","Извините, я мало говорю по-испански. Можно написать в WhatsApp?"],
+["¿Me lo puede escribir por WhatsApp?","Можете написать мне это в WhatsApp?"],
+["Un momento, que apunto.","Минутку, я запишу."],
+["¿Me lo puede deletrear?","Можете продиктовать по буквам?"],
+["¿Lo he entendido bien?","Я правильно понял? (и повторить услышанное)"],
+["Ahora mismo le mando un mensaje.","Прямо сейчас отправлю сообщение."],
+["Estoy conduciendo. Le llamo en cinco minutos.","Я за рулём. Перезвоню через пять минут."]
+];
+var W=[
+["la reforma","ремонт"],["la obra","строительные работы, объект"],["el piso","квартира"],["la vivienda","жильё"],["la casa","дом"],["la planta","этаж"],["el ascensor","лифт"],["el baño","ванная, санузел"],["la cocina","кухня"],["la bañera","ванна"],["el plato de ducha","душевой поддон"],["el suelo","пол"],["el azulejo","плитка настенная"],["el gres","керамогранит"],["la pared","стена"],["la humedad","сырость"],["la escalera","лестница"],["el escalón","ступень"],["el mueble","мебель, тумба"],["la encimera","столешница"],["la instalación eléctrica","электрика, проводка"],["el presupuesto","смета"],["el plazo","срок"],["la ubicación","локация"],["la dirección","адрес"],
+["reformar","ремонтировать"],["cambiar","менять"],["quitar","убирать, снимать"],["arreglar","чинить"],["poner","ставить, класть"],["pasar","заехать"],["quedar","договориться о встрече"],["mandar","отправить"],["apuntar","записать"]
+];
+var $=function(s){return document.querySelector(s)};
+var synth=window.speechSynthesis;
+function toast(t){var e=$("#toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},2200)}
+function say(t){
+ if(!synth){toast("Озвучка не поддерживается в этом браузере");return}
+ synth.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="es-ES";u.rate=.85;
+ var v=synth.getVoices().filter(function(x){return x.lang&&x.lang.toLowerCase().indexOf("es")===0})[0];
+ if(v)u.voice=v;synth.speak(u)}
+function btn(t){return '<button class="sp" data-t="'+t.replace(/"/g,"&quot;")+'" aria-label="Слушать">&#9654;</button>'}
+$("#resc").innerHTML=RESC.map(function(r){return '<div class="card row"><div><div class="es">'+r[0]+'</div><div class="ru">'+r[1]+'</div></div>'+btn(r[0])+'</div>'}).join("");
+function drawWords(){
+ var f=($("#q").value||"").toLowerCase();
+ $("#words").innerHTML=W.filter(function(w){return !f||w[0].toLowerCase().indexOf(f)>-1||w[1].toLowerCase().indexOf(f)>-1}).map(function(w){return '<div class="card row"><div><div class="es">'+w[0]+'</div><div class="ru">'+w[1]+'</div></div>'+btn(w[0])+'</div>'}).join("")||'<p class="mute">Ничего не найдено. Попробуй другое слово.</p>'}
+$("#q").oninput=drawWords;drawWords();
+document.addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(b)say(b.dataset.t)});
+function route(){
+ var h=(location.hash||"#home").slice(1);if(!document.getElementById(h))h="home";
+ document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===h)});
+ document.querySelectorAll("#nav a").forEach(function(a){a.classList.toggle("cur",a.getAttribute("href")==="#"+h)});
+ if(synth)synth.cancel();window.scrollTo(0,0)}
+window.addEventListener("hashchange",route);route();
+if(synth&&synth.getVoices)synth.getVoices();
+</script>
+</body>
+</html>
