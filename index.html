@@ -554,6 +554,13 @@ body.feedpage,body.battlepage{overflow:hidden}
 @media (max-width:360px){.quick .q b{font-size:15px}.quick{gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))}.quick .q{padding:10px}.fcard .q{font-size:27px}.fcard .es{font-size:22px}}
 @media (prefers-reduced-motion:reduce){.pop{animation:none;opacity:0}.tbarw #tbar{transition:none}}
 
+.car .kn{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 20px 0}
+.car .knbtn{display:flex;align-items:center;gap:8px;min-height:52px;padding:0 22px;border-radius:26px;border:2px solid #5FBF8F;background:transparent;color:#BFEBD3;font:600 17px inherit;cursor:pointer}
+.car .knbtn:disabled{opacity:.4}
+.car .kn .link{color:#A9B8C1;font-size:14px}
+.plist .sq.on{background:#2E9E6B;color:#fff}
+.car .say.es+.sm{font-size:18px}
+
 </style>
 </head>
 <body>
@@ -633,10 +640,10 @@ var store = {
   get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 };
-var DEF = { v: 2, name: '', city: '', theme: 'auto', voice: '', rate: 1, lessons: {}, days: [], ck: {}, cards: {}, tips: {}, onb: false, car: {},
+var DEF = { v: 2, name: '', city: '', theme: 'auto', voice: '', rate: 1, lessons: {}, days: [], ck: {}, cards: {}, tips: {}, onb: false, car: {}, known: {},
   why: '', pts: 0, best: 0, sound: true, haptic: true, fz: 1, fzLast: 0, frozen: {}, fed: {}, rem: { on: false, h: 19, m: 30 }, pushUrl: '' };
 var S = Object.assign({}, DEF, store.get(KEY, {}) || {});
-['lessons', 'ck', 'cards', 'tips', 'car', 'frozen', 'fed'].forEach(function (k) { if (!S[k] || typeof S[k] !== 'object') S[k] = {}; });
+['lessons', 'ck', 'cards', 'tips', 'car', 'frozen', 'fed', 'known'].forEach(function (k) { if (!S[k] || typeof S[k] !== 'object') S[k] = {}; });
 if (!S.rem || typeof S.rem !== 'object') S.rem = { on: false, h: 19, m: 30 };
 ['pts', 'best', 'fz', 'fzLast'].forEach(function (k) { S[k] = +S[k] || 0; });
 if (typeof S.why !== 'string') S.why = '';
@@ -1867,7 +1874,7 @@ function dictHtml() {
   var list = D.dict.filter(function (w) { return (!lf || w[2].indexOf(lf) >= 0) && (!q || fold(w[0] + ' ' + w[1]).indexOf(q) >= 0); });
   var chips = '<div class="chips" style="margin:0 -16px 4px">' + ['Все'].concat(D.lessons.map(function (L) { return 'Урок ' + L.n; })).map(function (t, k) { return '<button class="chip" data-act="dictL" data-l="' + k + '" aria-pressed="' + (k === lf) + '">' + t + '</button>'; }).join('') + '</div>';
   return chips + '<p class="cnt">' + list.length + ' ' + plural(list.length, 'слово', 'слова', 'слов') + (lf ? ' в уроке ' + lf : ' в уроках 1–6') + '</p><ul class="plist">' + list.map(function (w) {
-    return '<li class="pcard"><div class="tx"><p class="es" lang="es">' + esc(w[0]) + '</p><p class="ru">' + esc(w[1]) + '</p></div><button class="sq blue" data-act="say" data-es="' + esc(speakable(w[0])) + '" aria-label="Слушать">' + ic('speaker', 22) + '</button></li>';
+    return '<li class="pcard"><div class="tx"><p class="es" lang="es">' + esc(w[0]) + '</p><p class="ru">' + esc(w[1]) + '</p></div><button class="sq blue" data-act="say" data-es="' + esc(speakable(w[0])) + '" aria-label="Слушать">' + ic('speaker', 22) + '</button><button class="sq' + (S.known[normEs(speakable(w[0]))] ? ' on' : '') + '" data-act="wKnown" data-es="' + esc(speakable(w[0])) + '" aria-pressed="' + !!S.known[normEs(speakable(w[0]))] + '" aria-label="Запомнил">' + ic('check', 22) + '</button></li>';
   }).join('') + '</ul>';
 }
 function paintPhrases(full) {
@@ -1879,6 +1886,7 @@ function paintPhrases(full) {
 }
 ACT.seg = function (el) { V.seg = el.dataset.s; history.replaceState(null, '', '#/phrases/' + V.seg); paintPhrases(); };
 ACT.cat = function (el) { V.cat = +el.dataset.c; [].forEach.call(document.querySelectorAll('[data-act="cat"]'), function (b) { b.setAttribute('aria-pressed', String(+b.dataset.c === V.cat)); }); paintPhrases(); };
+ACT.wKnown = function (el) { var k = normEs(el.dataset.es); if (S.known[k]) delete S.known[k]; else S.known[k] = 1; save(); toast(S.known[k] ? 'Запомнил: в машине не повторяется' : 'Вернул в машину'); paintPhrases(); };
 ACT.dictL = function (el) { V.dl = +el.dataset.l; paintPhrases(); };
 ACT.waL = function (el) { V.wl = +el.dataset.l; paintPhrases(); };
 function scrPhrases(seg, arg) {
@@ -1914,24 +1922,30 @@ function carQueue(L) {
   L.phrases.forEach(function (x) { add(x[0], x[1]); });
   L.kw.forEach(function (x) { add(x[0], x[1]); });
   L.pairs.forEach(function (x) { add(x[1], x[3]); });
+  wordsOf(L.n).forEach(function (w) { add(speakable(w[0]), w[1]); });
+  items = items.filter(function (it) { return !S.known[normEs(it.es)]; });
   return items.concat(shuffle(items, rng(L.n * 7919)));
 }
+function knownCount() { return Object.keys(S.known).length; }
 function carEst(it) { return 1.2 + it.ru.length * 0.075 + carGap(it) / 1000 + it.es.length * 0.08 + 1 + carGap(it) / 2000; }
 function carGap(it) { return clamp(2200 + it.es.length * 75, 3000, 8000); }
 function fmtTime(s) { s = Math.round(s); return Math.floor(s / 60) + ':' + pad2(s % 60); }
 function carHtml() {
   var it = V.q[Math.min(V.pos, V.q.length - 1)], ph = V.phase, long = function (s) { return s.length > 46 ? ' long' : ''; };
   var st;
-  if (ph === 'idle') st = '<div class="st"><b>Нажми ▶, чтобы начать</b></div><p class="say' + long(it.ru) + '">' + esc(nm(it.ru)) + '</p><p class="sm">Сначала прозвучит подсказка по-русски</p>';
+  if (!it) st = '<div class="st">' + ic('check', 28) + '<b>Всё отмечено как «запомнил»</b></div><p class="say">¡Muy bien!</p><p class="sm">Вернуть фразы можно кнопкой внизу</p>';
+  else if (ph === 'idle' && V.seen) st = '<div class="st"><b>Пауза</b></div><p class="say' + long(it.ru) + '">' + esc(nm(it.ru)) + '</p><p class="say es' + long(it.es) + '" lang="es">' + esc(nm(it.es)) + '</p><p class="sm">Нажми ▶, чтобы продолжить</p>';
+  else if (ph === 'idle') st = '<div class="st"><b>Нажми ▶, чтобы начать</b></div><p class="say' + long(it.ru) + '">' + esc(nm(it.ru)) + '</p><p class="sm">Сначала прозвучит подсказка по-русски</p>';
   else if (ph === 'prompt') st = '<div class="st">' + ic('speaker1', 28) + '<b>Подсказка</b></div><p class="say' + long(it.ru) + '">' + esc(nm(it.ru)) + '</p><p class="sm">Сейчас будет пауза для ответа</p>';
   else if (ph === 'pause') st = '<div class="st"><span class="ring run" style="--d:' + V.gap + 'ms"><svg viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="24"/><circle class="fg" cx="26" cy="26" r="24"/></svg><span>' + Math.round(V.gap / 1000) + '</span></span><b>Твоя очередь: скажи вслух</b></div><p class="say' + long(it.ru) + '">' + esc(nm(it.ru)) + '</p><p class="sm">Потом прозвучит ответ</p>';
-  else if (ph === 'answer') st = '<div class="st">' + ic('speaker1', 28) + '<b>Правильно так</b></div><p class="say es' + long(it.es) + '" lang="es">' + esc(nm(it.es)) + '</p><p class="sm">Повтори за диктором</p>';
+  else if (ph === 'answer') st = '<div class="st">' + ic('speaker1', 28) + '<b>Правильно так</b></div><p class="say es' + long(it.es) + '" lang="es">' + esc(nm(it.es)) + '</p><p class="sm">' + esc(nm(it.ru)) + '</p>';
   else st = '<div class="st">' + ic('check', 28) + '<b>Аудиоурок пройден</b></div><p class="say">¡Muy bien!</p><p class="sm">Можно начать заново или выбрать другой урок</p>';
   return st;
 }
 function paintCar() {
   var s = $('#carStage'); if (s) s.innerHTML = carHtml();
-  var n = V.q.length, i = Math.min(V.pos, n), done = 0, total = 0;
+  var n = V.q.length || 1, i = Math.min(V.pos, n), done = 0, total = 0;
+  var kb = $('#carKnown'); if (kb) { kb.disabled = !V.q.length; var kr = $('#carReset'); if (kr) { kr.hidden = !knownCount(); kr.textContent = 'Вернуть убранные (' + knownCount() + ')'; } }
   V.q.forEach(function (it, k) { var e = carEst(it); total += e; if (k < i) done += e; });
   $('#carBar').style.width = Math.round(i / n * 100) + '%';
   $('#carCnt').textContent = 'фраза ' + Math.min(i + 1, n) + ' из ' + n;
@@ -1955,15 +1969,25 @@ async function carRun() {
   V.playing = false; V.phase = 'end'; S.car[V.n] = 0; markActive(); paintCar(); wake(false);
 }
 ACT.carMain = function () {
-  if (V.playing) { TTS.stop(); V.playing = false; V.phase = 'idle'; wake(false); paintCar(); return; }
+  if (V.playing) { TTS.stop(); V.playing = false; V.phase = 'idle'; V.seen = true; wake(false); paintCar(); return; }
   if (V.phase === 'end') V.pos = 0;
   carRun();
 };
-ACT.carPrev = function () { var was = V.playing; TTS.stop(); V.playing = false; V.pos = Math.max(0, V.pos - (V.phase === 'prompt' || V.phase === 'idle' ? 1 : 0)); V.phase = 'idle'; paintCar(); if (was) carRun(); };
-ACT.carNext = function () { var was = V.playing; TTS.stop(); V.playing = false; V.pos = Math.min(V.q.length - 1, V.pos + 1); V.phase = 'idle'; paintCar(); if (was) carRun(); };
+ACT.carPrev = function () { var was = V.playing; V.seen = !was; TTS.stop(); V.playing = false; V.pos = Math.max(0, V.pos - (V.phase === 'prompt' || V.phase === 'idle' ? 1 : 0)); V.phase = 'idle'; paintCar(); if (was) carRun(); };
+ACT.carNext = function () { var was = V.playing; V.seen = !was; TTS.stop(); V.playing = false; V.pos = Math.min(V.q.length - 1, V.pos + 1); V.phase = 'idle'; paintCar(); if (was) carRun(); };
+ACT.carKnown = function () {
+  if (!V.q.length) return; var was = V.playing, cur = V.q[Math.min(V.pos, V.q.length - 1)], k = normEs(cur.es);
+  TTS.stop(); V.playing = false; S.known[k] = 1; save();
+  var before = 0; V.q.forEach(function (it, j) { if (j < V.pos && normEs(it.es) === k) before++; });
+  V.q = V.q.filter(function (it) { return normEs(it.es) !== k; }); V.pos = clamp(V.pos - before, 0, Math.max(0, V.q.length - 1));
+  V.phase = 'idle'; V.seen = false; S.car[V.n] = V.pos; save(); toast('Запомнил. Больше не повторяю'); paintCar(); if (was && V.q.length) carRun(); else wake(false);
+};
+ACT.carReset = function () {
+  var was = V.playing; TTS.stop(); V.playing = false; S.known = {}; save(); var L = lesson(V.n); V.q = carQueue(L); V.pos = 0; V.phase = 'idle'; V.seen = false; toast('Все фразы вернулись'); paintCar(); wake(false);
+};
 function scrCar(n) {
   var L = lesson(n) || lastDone() || D.lessons[0];
-  V.n = L.n; V.q = carQueue(L); V.pos = clamp(S.car[L.n] || 0, 0, V.q.length - 1); V.phase = 'idle'; V.playing = false;
+  V.n = L.n; V.q = carQueue(L); V.pos = clamp(S.car[L.n] || 0, 0, V.q.length - 1); V.phase = 'idle'; V.playing = false; V.seen = false;
   if ((S.car[L.n] || 0) >= V.q.length) V.pos = 0;
   var total = V.q.reduce(function (a, it) { return a + carEst(it); }, 0);
   var ruNote = TTS.ok && TTS.ready && TTS.voices.length && !TTS.ru() ? '<p class="sm" style="padding:0 24px;text-align:center">Русского голоса нет: подсказку читай с экрана на стоянке или добавь русский голос в настройках телефона.</p>' : '';
@@ -1974,6 +1998,7 @@ function scrCar(n) {
     '<section class="stage" id="carStage" aria-live="polite">' + carHtml() + '</section>' + ruNote +
     '<section class="prog" aria-label="Прогресс"><div class="bar"><i id="carBar" style="width:0"></i></div><div class="r"><span id="carCnt"></span><span id="carTime"></span></div></section>' +
     '<div class="ctl"><div><button class="side" data-act="carPrev" aria-label="Повторить предыдущую фразу">' + ic('rew', 30) + '</button><span>Назад</span></div><button class="main" id="carMain" data-act="carMain" aria-label="Слушать">' + ic('play', 46) + '</button><div><button class="side" data-act="carNext" aria-label="Следующая фраза">' + ic('ffwd', 30) + '</button><span>Дальше</span></div></div>' +
+    '<div class="kn"><button class="knbtn" id="carKnown" data-act="carKnown">' + ic('check', 22) + 'Запомнил, не повторять</button><button class="link" id="carReset" data-act="carReset" hidden></button></div>' +
     '<p class="foot">Экран можно не смотреть: подсказка, пауза, ответ. Не держи телефон в руке за рулём.</p></div>';
   return {
     html: html, body: 'car', title: 'В машине', tc: '#0E1A20', mount: function () {

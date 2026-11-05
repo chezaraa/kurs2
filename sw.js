@@ -1,5 +1,5 @@
 // Офлайн-режим курса: страница берётся из сети, а без интернета из кэша.
-var VERSION = 'ifr-202611051236';
+var VERSION = 'ifr-202611051747';
 var CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', function (e) {
